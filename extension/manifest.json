@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Alerta de Links — Demo TCC",
+  "version": "1.0.0",
+  "description": "Analisa a URL da aba atual com uma API local e explica sinais de atenção.",
+  "action": {
+    "default_title": "Analisar endereço",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab"],
+  "host_permissions": ["http://127.0.0.1:5000/*"]
+}

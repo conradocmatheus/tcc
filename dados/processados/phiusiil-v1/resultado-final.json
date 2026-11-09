@@ -1,0 +1,266 @@
+{
+  "evaluatedAtUtc": "2026-10-24T17:30:02.721Z",
+  "files": {
+    "testSha256": "4b36c90fd65945ffd99abb43abf499af8646446e012e65b9352f45fd0b7afb43",
+    "pslSha256": "0232f4df0831911356e8ee1f4d5c3b6b12c0ed3f6bd66b0f81c8ab5d3d49e9ca",
+    "configSha256": "676c803bb8fdc8a22b648e70d49806f865ec671eb4b09cd1fff9ab7425a12050",
+    "analyzerSha256": "600bad64ed74b4fa0413eb550cff9b6ce6f2ac59cbe704410511e09bcea88d95"
+  },
+  "baseline": {
+    "size": 228,
+    "classCounts": {
+      "phishing": 110,
+      "legitima": 118
+    },
+    "weights": {
+      "ip_host": 3,
+      "userinfo": 3,
+      "punycode": 2,
+      "subdomains": 2,
+      "length": 1,
+      "terms": 1,
+      "http": 1
+    },
+    "threshold": 3,
+    "confusion": {
+      "vp": 4,
+      "fp": 0,
+      "vn": 118,
+      "fn": 106
+    },
+    "metrics": {
+      "precision": 1,
+      "recall": 0.03636363636363636,
+      "f1": 0.07017543859649122,
+      "falsePositiveRate": 0
+    },
+    "signalCounts": {
+      "ip_host": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "userinfo": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "punycode": {
+        "phishing": 1,
+        "legitima": 0
+      },
+      "subdomains": {
+        "phishing": 4,
+        "legitima": 3
+      },
+      "length": {
+        "phishing": 5,
+        "legitima": 0
+      },
+      "terms": {
+        "phishing": 9,
+        "legitima": 0
+      },
+      "http": {
+        "phishing": 67,
+        "legitima": 0
+      }
+    },
+    "scoreDistribution": {
+      "phishing": {
+        "0": 36,
+        "1": 63,
+        "2": 7,
+        "3": 3,
+        "5": 1
+      },
+      "legitima": {
+        "0": 115,
+        "2": 3
+      }
+    },
+    "errorExamples": {
+      "fp": [],
+      "fn": [
+        {
+          "id": "91b0b09e210d",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "7d96ac270c43",
+          "score": 2,
+          "signals": [
+            "length",
+            "http"
+          ]
+        },
+        {
+          "id": "d821fa979830",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "ce50ba7aaff9",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "0310916f227a",
+          "score": 0,
+          "signals": []
+        }
+      ]
+    }
+  },
+  "calibrated": {
+    "size": 228,
+    "classCounts": {
+      "phishing": 110,
+      "legitima": 118
+    },
+    "weights": {
+      "ip_host": 3,
+      "userinfo": 3,
+      "punycode": 2,
+      "subdomains": 2,
+      "length": 1,
+      "terms": 1,
+      "http": 1
+    },
+    "threshold": 1,
+    "confusion": {
+      "vp": 74,
+      "fp": 3,
+      "vn": 115,
+      "fn": 36
+    },
+    "metrics": {
+      "precision": 0.961038961038961,
+      "recall": 0.6727272727272727,
+      "f1": 0.7914438502673797,
+      "falsePositiveRate": 0.025423728813559324
+    },
+    "signalCounts": {
+      "ip_host": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "userinfo": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "punycode": {
+        "phishing": 1,
+        "legitima": 0
+      },
+      "subdomains": {
+        "phishing": 4,
+        "legitima": 3
+      },
+      "length": {
+        "phishing": 5,
+        "legitima": 0
+      },
+      "terms": {
+        "phishing": 9,
+        "legitima": 0
+      },
+      "http": {
+        "phishing": 67,
+        "legitima": 0
+      }
+    },
+    "scoreDistribution": {
+      "phishing": {
+        "0": 36,
+        "1": 63,
+        "2": 7,
+        "3": 3,
+        "5": 1
+      },
+      "legitima": {
+        "0": 115,
+        "2": 3
+      }
+    },
+    "errorExamples": {
+      "fp": [
+        {
+          "id": "902a3bf26be5",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        },
+        {
+          "id": "f473a3796b29",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        },
+        {
+          "id": "f7290635b5a6",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        }
+      ],
+      "fn": [
+        {
+          "id": "0310916f227a",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "f1f3ed415427",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "f2488ffc0189",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "c614dbfc1e30",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "1bccbf2fa0f4",
+          "score": 0,
+          "signals": []
+        }
+      ]
+    }
+  },
+  "deltaF1": 0.7212684116708885,
+  "confidence95": {
+    "method": "Bootstrap pareado por domínio registrável, estratificado por classe; 5.000 reamostragens, semente 20261024; percentis 2,5 e 97,5.",
+    "domains": 226,
+    "domainsByClass": {
+      "phishing": 108,
+      "legitima": 118
+    },
+    "baselineF1": [
+      0.017699115044247787,
+      0.13675213675213677
+    ],
+    "calibratedF1": [
+      0.7231638418079096,
+      0.8512871287128712
+    ],
+    "deltaF1": [
+      0.632402590615251,
+      0.8011323739237708
+    ]
+  },
+  "interpretation": "Estimativas condicionais à amostra PhiUSIIL; a prevalência de phishing foi artificialmente equilibrada. O limite calibrado foi escolhido sem consultar o teste."
+}

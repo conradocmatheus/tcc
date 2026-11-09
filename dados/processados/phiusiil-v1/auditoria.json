@@ -1,0 +1,66 @@
+{
+  "createdAtUtc": "2026-10-24T14:52:41.356Z",
+  "seed": "tcc-2026-10-24-v1",
+  "targetPerClass": 500,
+  "maxPerDomainPerClass": 5,
+  "source": {
+    "name": "PhiUSIIL Phishing URL (Website)",
+    "provider": "UCI Machine Learning Repository",
+    "datasetId": 967,
+    "url": "https://archive.ics.uci.edu/dataset/967/phiusiil+phishing+url+dataset",
+    "csvSha256": "a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6",
+    "pslSha256": "0232f4df0831911356e8ee1f4d5c3b6b12c0ed3f6bd66b0f81c8ab5d3d49e9ca"
+  },
+  "labelMapping": {
+    "0": "phishing",
+    "1": "legitima"
+  },
+  "counters": {
+    "sourceRows": 235795,
+    "invalidLabel": 0,
+    "invalidUrl": 1384,
+    "duplicate": 877,
+    "conflictingUrl": 1,
+    "mixedDomainRows": 604,
+    "eligible": 232928
+  },
+  "selection": {
+    "phishing": {
+      "eligible": 98198,
+      "selected": 500,
+      "domains": 455,
+      "cappedDuringSelection": 23
+    },
+    "legitima": {
+      "eligible": 134730,
+      "selected": 500,
+      "domains": 499,
+      "cappedDuringSelection": 0
+    }
+  },
+  "splits": {
+    "desenvolvimento": {
+      "total": 579,
+      "phishing": 285,
+      "legitima": 294,
+      "domains": 548
+    },
+    "validacao": {
+      "total": 193,
+      "phishing": 105,
+      "legitima": 88,
+      "domains": 180
+    },
+    "teste": {
+      "total": 228,
+      "phishing": 110,
+      "legitima": 118,
+      "domains": 226
+    }
+  },
+  "limitations": [
+    "Rótulos são os publicados pelo conjunto PhiUSIIL e não foram revalidados.",
+    "Uma amostra equilibrada não representa a prevalência real de phishing.",
+    "Somente a cadeia textual da URL é usada pelo analisador."
+  ]
+}

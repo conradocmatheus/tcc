@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analisar endereço</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>Alerta de Links</h1>
+    <p class="intro">Veja sinais de atenção no endereço desta página.</p>
+    <div class="address">
+      <span class="label">Site atual</span>
+      <strong id="site">Carregando…</strong>
+    </div>
+    <button id="analyze" type="button" disabled>Analisar este site</button>
+    <section id="result" class="result" role="status" aria-live="polite" aria-atomic="true">
+      <p id="status">Abrindo a página atual…</p>
+    </section>
+    <p class="footer">Análise local para demonstração acadêmica. Nenhum site é bloqueado.</p>
+  </main>
+</body>
+</html>

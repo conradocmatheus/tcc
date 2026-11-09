@@ -1,0 +1,482 @@
+{
+  "method": "Busca exaustiva de 4^7 combinações de pesos (0..3) e cinco limiares (1..5). Ordenação: maior F1 no desenvolvimento; em empate, maior F1 na validação, menor FPR e menor distância dos pesos baseline.",
+  "files": {
+    "developmentSha256": "77c71cc538b9cca1d4d35e5fd664c0ea1464267173c2a39d6ae316e80c0d74ca",
+    "validationSha256": "dea2db86b79597286e210b9314419bf2224d9db81191ddbdf707ae7126330127"
+  },
+  "weights": {
+    "ip_host": 3,
+    "userinfo": 3,
+    "punycode": 2,
+    "subdomains": 2,
+    "length": 1,
+    "terms": 1,
+    "http": 1
+  },
+  "threshold": 1,
+  "development": {
+    "size": 579,
+    "classCounts": {
+      "phishing": 285,
+      "legitima": 294
+    },
+    "weights": {
+      "ip_host": 3,
+      "userinfo": 3,
+      "punycode": 2,
+      "subdomains": 2,
+      "length": 1,
+      "terms": 1,
+      "http": 1
+    },
+    "threshold": 1,
+    "confusion": {
+      "vp": 166,
+      "fp": 4,
+      "vn": 290,
+      "fn": 119
+    },
+    "metrics": {
+      "precision": 0.9764705882352941,
+      "recall": 0.5824561403508772,
+      "f1": 0.7296703296703296,
+      "falsePositiveRate": 0.013605442176870748
+    },
+    "signalCounts": {
+      "ip_host": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "userinfo": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "punycode": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "subdomains": {
+        "phishing": 11,
+        "legitima": 4
+      },
+      "length": {
+        "phishing": 8,
+        "legitima": 0
+      },
+      "terms": {
+        "phishing": 14,
+        "legitima": 0
+      },
+      "http": {
+        "phishing": 147,
+        "legitima": 0
+      }
+    },
+    "scoreDistribution": {
+      "phishing": {
+        "0": 119,
+        "1": 149,
+        "2": 9,
+        "3": 8
+      },
+      "legitima": {
+        "0": 290,
+        "2": 4
+      }
+    },
+    "errorExamples": {
+      "fp": [
+        {
+          "id": "bd94a65025e3",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        },
+        {
+          "id": "566f9b348308",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        },
+        {
+          "id": "63743d15b7e7",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        },
+        {
+          "id": "d0ccd4ca8e7c",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        }
+      ],
+      "fn": [
+        {
+          "id": "8e7e6a9c298b",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "ee3c9f20acf6",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "ea4e3a81fa93",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "acb91e526080",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "0c26b4592e0c",
+          "score": 0,
+          "signals": []
+        }
+      ]
+    }
+  },
+  "validation": {
+    "size": 193,
+    "classCounts": {
+      "phishing": 105,
+      "legitima": 88
+    },
+    "weights": {
+      "ip_host": 3,
+      "userinfo": 3,
+      "punycode": 2,
+      "subdomains": 2,
+      "length": 1,
+      "terms": 1,
+      "http": 1
+    },
+    "threshold": 1,
+    "confusion": {
+      "vp": 54,
+      "fp": 2,
+      "vn": 86,
+      "fn": 51
+    },
+    "metrics": {
+      "precision": 0.9642857142857143,
+      "recall": 0.5142857142857142,
+      "f1": 0.6708074534161491,
+      "falsePositiveRate": 0.022727272727272728
+    },
+    "signalCounts": {
+      "ip_host": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "userinfo": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "punycode": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "subdomains": {
+        "phishing": 7,
+        "legitima": 2
+      },
+      "length": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "terms": {
+        "phishing": 6,
+        "legitima": 0
+      },
+      "http": {
+        "phishing": 46,
+        "legitima": 0
+      }
+    },
+    "scoreDistribution": {
+      "phishing": {
+        "0": 51,
+        "1": 45,
+        "2": 6,
+        "3": 3
+      },
+      "legitima": {
+        "0": 86,
+        "2": 2
+      }
+    },
+    "errorExamples": {
+      "fp": [
+        {
+          "id": "7a1fa67c8c28",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        },
+        {
+          "id": "446e1d92c96d",
+          "score": 2,
+          "signals": [
+            "subdomains"
+          ]
+        }
+      ],
+      "fn": [
+        {
+          "id": "59c8020313bc",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "82783fd86d59",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "daa8d19eee2a",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "5e49d63f409b",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "8e7043f9ea46",
+          "score": 0,
+          "signals": []
+        }
+      ]
+    }
+  },
+  "baselineDevelopment": {
+    "size": 579,
+    "classCounts": {
+      "phishing": 285,
+      "legitima": 294
+    },
+    "weights": {
+      "ip_host": 3,
+      "userinfo": 3,
+      "punycode": 2,
+      "subdomains": 2,
+      "length": 1,
+      "terms": 1,
+      "http": 1
+    },
+    "threshold": 3,
+    "confusion": {
+      "vp": 8,
+      "fp": 0,
+      "vn": 294,
+      "fn": 277
+    },
+    "metrics": {
+      "precision": 1,
+      "recall": 0.028070175438596492,
+      "f1": 0.05460750853242321,
+      "falsePositiveRate": 0
+    },
+    "signalCounts": {
+      "ip_host": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "userinfo": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "punycode": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "subdomains": {
+        "phishing": 11,
+        "legitima": 4
+      },
+      "length": {
+        "phishing": 8,
+        "legitima": 0
+      },
+      "terms": {
+        "phishing": 14,
+        "legitima": 0
+      },
+      "http": {
+        "phishing": 147,
+        "legitima": 0
+      }
+    },
+    "scoreDistribution": {
+      "phishing": {
+        "0": 119,
+        "1": 149,
+        "2": 9,
+        "3": 8
+      },
+      "legitima": {
+        "0": 290,
+        "2": 4
+      }
+    },
+    "errorExamples": {
+      "fp": [],
+      "fn": [
+        {
+          "id": "2dbc99b0a40a",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "5d7d05c37774",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "49140cf9d9bc",
+          "score": 2,
+          "signals": [
+            "terms",
+            "http"
+          ]
+        },
+        {
+          "id": "1b4c73eb7f7a",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "540168d8ac30",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        }
+      ]
+    }
+  },
+  "baselineValidation": {
+    "size": 193,
+    "classCounts": {
+      "phishing": 105,
+      "legitima": 88
+    },
+    "weights": {
+      "ip_host": 3,
+      "userinfo": 3,
+      "punycode": 2,
+      "subdomains": 2,
+      "length": 1,
+      "terms": 1,
+      "http": 1
+    },
+    "threshold": 3,
+    "confusion": {
+      "vp": 3,
+      "fp": 0,
+      "vn": 88,
+      "fn": 102
+    },
+    "metrics": {
+      "precision": 1,
+      "recall": 0.02857142857142857,
+      "f1": 0.05555555555555555,
+      "falsePositiveRate": 0
+    },
+    "signalCounts": {
+      "ip_host": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "userinfo": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "punycode": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "subdomains": {
+        "phishing": 7,
+        "legitima": 2
+      },
+      "length": {
+        "phishing": 0,
+        "legitima": 0
+      },
+      "terms": {
+        "phishing": 6,
+        "legitima": 0
+      },
+      "http": {
+        "phishing": 46,
+        "legitima": 0
+      }
+    },
+    "scoreDistribution": {
+      "phishing": {
+        "0": 51,
+        "1": 45,
+        "2": 6,
+        "3": 3
+      },
+      "legitima": {
+        "0": 86,
+        "2": 2
+      }
+    },
+    "errorExamples": {
+      "fp": [],
+      "fn": [
+        {
+          "id": "83e1162279a5",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "59c8020313bc",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "8929fbd2d8f9",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        },
+        {
+          "id": "82783fd86d59",
+          "score": 0,
+          "signals": []
+        },
+        {
+          "id": "f9b91a6e80c0",
+          "score": 1,
+          "signals": [
+            "http"
+          ]
+        }
+      ]
+    }
+  }
+}

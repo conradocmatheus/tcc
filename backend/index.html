@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alerta de Links — Demo TCC</title>
+  <style>
+    :root { font-family: Arial, Helvetica, sans-serif; color: #17233b; background: #f5f7fb; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; }
+    main { width: min(100%, 720px); margin: 32px auto; }
+    h1 { font-size: 2rem; margin: 0 0 8px; }
+    p { line-height: 1.5; }
+    .badge { display: inline-block; color: #176343; background: #e8f7ee; padding: 6px 10px; border-radius: 999px; font-weight: 700; }
+    .card { background: white; border: 1px solid #cbd5e1; border-radius: 12px; padding: 20px; margin-top: 22px; }
+    label { display: block; font-weight: 700; margin-bottom: 8px; }
+    input { width: 100%; padding: 12px; border: 1px solid #8b99aa; border-radius: 7px; font: inherit; }
+    button { min-height: 44px; border: 0; border-radius: 7px; padding: 10px 16px; background: #164a86; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+    button:hover { background: #103765; }
+    :focus-visible { outline: 3px solid #e49b1b; outline-offset: 2px; }
+    form button { margin-top: 12px; }
+    .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .examples button { background: #e7eef8; color: #173a66; font-weight: 400; }
+    .examples button:hover { background: #d6e4f5; }
+    .hint, .limitation { font-size: .92rem; }
+    #result { border-left: 5px solid #9eabbc; }
+    #result.strong { border-left-color: #ae2525; background: #fff4f2; }
+    #result.caution { border-left-color: #a96800; background: #fff8e8; }
+    #result.clear { border-left-color: #227451; background: #f1faf5; }
+    #result h2 { margin-top: 0; }
+    li + li { margin-top: 7px; }
+    .score { font-size: 1.1rem; font-weight: 700; }
+    .signal-list { padding-left: 22px; }
+    .signal-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px; padding: 5px 0; }
+    .points { display: inline-block; padding: 2px 7px; border-radius: 5px; background: #e4eaf3; white-space: nowrap; }
+    .demo-site { padding: 12px; background: #f1f6fe; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="badge">API local ativa</span>
+    <h1>Alerta de Links</h1>
+    <p>Esta página ajuda a testar a prova de conceito do TCC. A API confere sete sinais no endereço, soma os pontos e explica por que chegou ao resultado.</p>
+
+    <section class="card" aria-labelledby="test-title">
+      <h2 id="test-title">Testar um endereço</h2>
+      <form id="analyze-form">
+        <label for="url">Endereço do site</label>
+        <input id="url" type="url" placeholder="https://exemplo.com/" required>
+        <button type="submit">Analisar endereço</button>
+      </form>
+      <p class="hint">Exemplos para demonstrar o limiar de um ponto sem visitar sites suspeitos:</p>
+      <div class="examples">
+        <button type="button" data-url="https://example.com/">Sem sinais locais</button>
+        <button type="button" data-url="https://example.com/login">Alerta com 1 ponto</button>
+        <button type="button" data-url="http://login.verificacao.conta.exemplo.test/">Alerta com 4 pontos</button>
+      </div>
+      <p class="demo-site"><a href="/exemplo/login" target="_blank" rel="noopener">Abrir site fictício para testar a extensão</a><br>Ele roda neste computador e deve gerar <strong>Suspeita forte — 5 pontos</strong>. Na nova aba, clique na extensão e em “Analisar este site”.</p>
+    </section>
+
+    <section id="result" class="card" role="status" aria-live="polite" aria-atomic="true">
+      <h2>Resultado</h2>
+      <p>Escolha um exemplo, digite um endereço ou abra o site fictício para começar.</p>
+    </section>
+    <section class="card" aria-labelledby="method-title">
+      <h2 id="method-title">Como a análise funciona</h2>
+      <p>A API soma pontos para sete sinais no endereço. Com 0 pontos, nenhuma regra local disparou. Com 1 ponto ou mais, a URL recebe um alerta de Suspeita forte. Isso é uma triagem por regras, não uma confirmação de phishing.</p>
+      <ul>
+        <li><strong>3 pontos:</strong> endereço em IP; informações antes de <code>@</code>.</li>
+        <li><strong>2 pontos:</strong> domínio codificado com <code>xn--</code>; cinco ou mais partes no nome do site.</li>
+        <li><strong>1 ponto:</strong> URL com mais de 120 caracteres; palavras de acesso ou verificação; uso de HTTP.</li>
+      </ul>
+      <p class="hint">Esses sinais não provam que um site é fraudulento. A classificação mostra apenas o que as regras locais encontraram.</p>
+    </section>
+    <p class="limitation">A análise usa somente regras locais, não consulta bases de ameaças e não confirma se um site é seguro. A extensão Chrome/Edge utiliza esta mesma API.</p>
+  </main>
+  <script>
+    const form = document.getElementById("analyze-form");
+    const input = document.getElementById("url");
+    const result = document.getElementById("result");
+    const styles = {
+      suspeita_forte: "strong",
+      atencao: "caution",
+      nenhuma_ameaca_conhecida: "clear"
+    };
+
+    function showText(title, message) {
+      result.className = "card";
+      result.replaceChildren();
+      const heading = document.createElement("h2");
+      const paragraph = document.createElement("p");
+      heading.textContent = title;
+      paragraph.textContent = message;
+      result.append(heading, paragraph);
+    }
+
+    async function analyze() {
+      showText("Analisando…", "Verificando os sinais locais deste endereço.");
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: input.value })
+        });
+        if (!response.ok) throw new Error("Não foi possível analisar este endereço.");
+        const data = await response.json();
+        result.className = `card ${styles[data.classification] || ""}`;
+        result.replaceChildren();
+        const heading = document.createElement("h2");
+        heading.textContent = data.title;
+        result.append(heading);
+        if (Number.isInteger(data.score)) {
+          const score = document.createElement("p");
+          score.className = "score";
+          score.textContent = `Pontuação total: ${data.score} ${data.score === 1 ? "ponto" : "pontos"}`;
+          result.append(score);
+        }
+        if (Array.isArray(data.signals) && data.signals.length) {
+          const subheading = document.createElement("h3");
+          subheading.textContent = "Sinais encontrados";
+          const list = document.createElement("ul");
+          list.className = "signal-list";
+          for (const signal of data.signals) {
+            const item = document.createElement("li");
+            const reason = document.createElement("span");
+            reason.textContent = signal.reason;
+            const points = document.createElement("strong");
+            points.className = "points";
+            points.textContent = `+${signal.points} ${signal.points === 1 ? "ponto" : "pontos"}`;
+            item.append(reason, points);
+            list.append(item);
+          }
+          result.append(subheading, list);
+        } else {
+          const explanation = document.createElement("p");
+          explanation.textContent = data.reasons[0];
+          result.append(explanation);
+        }
+        const recommendation = document.createElement("p");
+        recommendation.textContent = data.recommendation;
+        const limitation = document.createElement("p");
+        limitation.className = "limitation";
+        limitation.textContent = data.limitation;
+        result.append(recommendation, limitation);
+        result.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {
+        showText("Erro na análise", "Confira o endereço e tente novamente.");
+      }
+    }
+
+    form.addEventListener("submit", event => { event.preventDefault(); analyze(); });
+    document.querySelectorAll("[data-url]").forEach(button => {
+      button.addEventListener("click", () => { input.value = button.dataset.url; analyze(); });
+    });
+  </script>
+</body>
+</html>
