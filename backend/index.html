@@ -49,11 +49,11 @@
         <input id="url" type="url" placeholder="https://exemplo.com/" required>
         <button type="submit">Analisar endereço</button>
       </form>
-      <p class="hint">Exemplos para demonstrar o limiar de um ponto sem visitar sites suspeitos:</p>
+      <p class="hint">Exemplos para demonstrar as categorias sem visitar sites suspeitos:</p>
       <div class="examples">
         <button type="button" data-url="https://example.com/">Sem sinais locais</button>
-        <button type="button" data-url="https://example.com/login">Alerta com 1 ponto</button>
-        <button type="button" data-url="http://login.verificacao.conta.exemplo.test/">Alerta com 4 pontos</button>
+        <button type="button" data-url="https://example.com/login">Atenção com 1 ponto</button>
+        <button type="button" data-url="http://login.verificacao.conta.exemplo.test/">Suspeita forte com 4 pontos</button>
       </div>
       <p class="demo-site"><a href="/exemplo/login" target="_blank" rel="noopener">Abrir site fictício para testar a extensão</a><br>Ele roda neste computador e deve gerar <strong>Suspeita forte — 5 pontos</strong>. Na nova aba, clique na extensão e em “Analisar este site”.</p>
     </section>
@@ -64,7 +64,7 @@
     </section>
     <section class="card" aria-labelledby="method-title">
       <h2 id="method-title">Como a análise funciona</h2>
-      <p>A API soma pontos para sete sinais no endereço. Com 0 pontos, nenhuma regra local disparou. Com 1 ponto ou mais, a URL recebe um alerta de Suspeita forte. Isso é uma triagem por regras, não uma confirmação de phishing.</p>
+      <p>A API soma pontos para sete sinais no endereço. Com 0 pontos, nenhuma regra local disparou; com 1 ponto, mostra Atenção; com 2 ou mais, Suspeita forte. Isso é uma triagem por regras, não uma confirmação de phishing.</p>
       <ul>
         <li><strong>3 pontos:</strong> endereço em IP; informações antes de <code>@</code>.</li>
         <li><strong>2 pontos:</strong> domínio codificado com <code>xn--</code>; cinco ou mais partes no nome do site.</li>

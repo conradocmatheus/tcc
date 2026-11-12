@@ -2,7 +2,7 @@
 
 ## Em uma frase
 
-O trabalho constrói e avalia uma extensão de navegador que examina **somente o texto da URL**, soma pontos para sete sinais visíveis e explica ao usuário por que um endereço merece atenção. A pontuação é uma triagem, não uma prova de fraude nem uma probabilidade.
+O experimento original avaliou **somente o texto da URL**, com sete sinais explicáveis. A extensão passou a oferecer também uma opção complementar que lê os destinos de links no HTML recebido da página. A pontuação é uma triagem, não uma prova de fraude nem uma probabilidade.
 
 ## Qual problema o trabalho resolve?
 
@@ -10,10 +10,10 @@ Páginas falsas podem levar pessoas a informar senhas ou outros dados. A URL às
 
 ## O que foi construído?
 
-1. O usuário clica em **Analisar este site** na extensão.
-2. A extensão lê a URL da aba e a envia a uma API local.
-3. A API aplica sete regras, soma pontos e devolve categoria, pontuação e motivos.
-4. A extensão mostra o resultado. Ela não visita a URL para inspecionar a página, não consulta reputação externa e não bloqueia o site.
+1. O usuário escolhe **Analisar só a URL** ou **Analisar URL + HTML** na extensão.
+2. A extensão envia a URL da aba à API local. Na segunda opção, solicita também o HTML da página e o envia à mesma API.
+3. A API aplica sete regras à URL. Com HTML, examina `href` externos e soma no máximo um ponto complementar quando o destino também possui sinais lexicais.
+4. A extensão mostra a pontuação e os motivos. Ela não consulta reputação externa nem bloqueia o site.
 
 | Sinal | Pontos originais |
 |---|---:|
@@ -25,7 +25,9 @@ Páginas falsas podem levar pessoas a informar senhas ou outros dados. A URL às
 | Um dos oito termos definidos no código, no host ou caminho | 1 |
 | HTTP | 1 |
 
-Os oito termos são `login`, `verificacao`, `verify`, `senha`, `password`, `conta`, `account` e `atualizacao`. A busca aceita trechos dentro de palavras. Os pesos continuam iguais. Na extensão atual, 0 ponto significa nenhum sinal local e 1 ponto ou mais gera o alerta de suspeita forte; o limiar 3 permanece apenas como comparação histórica no experimento.
+Os oito termos são `login`, `verificacao`, `verify`, `senha`, `password`, `conta`, `account` e `atualizacao`. A busca aceita trechos dentro de palavras. Os pesos continuam iguais. Na extensão atual, 0 ponto significa nenhum sinal local, 1 ponto mostra Atenção e 2 ou mais mostram Suspeita forte. O limiar 1 foi o escolhido e medido no experimento offline; o limiar 2 é a política posterior de apresentação no uso cotidiano, ainda sem avaliação externa própria.
+
+**O que a análise de HTML faz?** Ela lê os destinos de todos os links `href` presentes no HTML recebido, dando prioridade aos links marcados como botões. Um destino em outro domínio não é automaticamente suspeito. A regra complementar pontua quando esse destino também recebe pelo menos dois pontos nas regras lexicais. O teste exploratório dessa camada usa HTML arquivado de outra base, pois a PhiUSIIL contém indicadores já extraídos, mas não o HTML bruto.
 
 ## De onde vieram os dados?
 
@@ -54,7 +56,7 @@ O teste final contém **110 URLs rotuladas phishing** e **118 legítimas**.
 
 ## O que a calibração realmente mudou?
 
-A busca de pesos inteiros 0–3 e limiares 1–5 usou apenas desenvolvimento e validação. Os **pesos escolhidos ficaram iguais** aos originais. O único ajuste selecionado foi reduzir de 3 para 1 o limiar considerado positivo na avaliação binária. Assim, qualquer sinal já gera previsão positiva no experimento calibrado. Isso aumenta detecção, mas também cria falsos alertas. Após essa avaliação, o limiar calibrado de um ponto foi aplicado à API da demonstração e, assim, ao resultado mostrado no popup. Os números do teste final foram medidos offline antes dessa atualização da interface.
+A busca de pesos inteiros 0–3 e limiares 1–5 usou apenas desenvolvimento e validação. Os **pesos escolhidos ficaram iguais** aos originais. O único ajuste selecionado foi reduzir de 3 para 1 o limiar considerado positivo na avaliação binária. Assim, qualquer sinal já gera previsão positiva no experimento calibrado. Isso aumenta detecção, mas também cria falsos alertas. Após a avaliação, o limiar 1 foi aplicado à API demonstrativa. Em uma revisão posterior, o limiar cotidiano da API foi alterado para 2 pontos, com Atenção para 1 ponto. Os números do teste final foram medidos offline e não representam essa política de apresentação posterior.
 
 ## Limitações que você deve saber explicar
 

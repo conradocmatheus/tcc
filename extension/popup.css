@@ -19,6 +19,8 @@ button { width: 100%; min-height: 44px; border: 0; border-radius: 8px; backgroun
 button:hover:not(:disabled) { background: #103765; }
 button:focus-visible { outline: 3px solid #e49b1b; outline-offset: 3px; }
 button:disabled { opacity: .6; cursor: not-allowed; }
+button.secondary { margin-top: 8px; background: #e3ecf7; color: #173a66; }
+button.secondary:hover:not(:disabled) { background: #d3e2f4; }
 .result { background: #fff; border: 2px solid #9eabbc; border-radius: 8px; padding: 14px; margin-top: 16px; line-height: 1.45; }
 .result.strong { border-color: #ae2525; background: #fff4f2; }
 .result.caution { border-color: #a96800; background: #fff8e8; }

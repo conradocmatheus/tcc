@@ -66,7 +66,7 @@ public static class UrlAnalyzer
             ? signals.Select(signal => signal.Reason).ToArray()
             : ["Nenhum dos sinais locais definidos nesta demo foi identificado."];
 
-        if (score >= 1)
+        if (score >= 2)
         {
             return new AnalysisResult(
                 "suspeita_forte",
@@ -75,6 +75,18 @@ public static class UrlAnalyzer
                 signals,
                 reasons,
                 "Evite informar dados pessoais. Confirme o endereço por um canal oficial.",
+                Limitation);
+        }
+
+        if (score > 0)
+        {
+            return new AnalysisResult(
+                "atencao",
+                "Atenção",
+                score,
+                signals,
+                reasons,
+                "Um sinal isolado também pode ocorrer em sites legítimos. Confira o endereço antes de informar dados pessoais.",
                 Limitation);
         }
 

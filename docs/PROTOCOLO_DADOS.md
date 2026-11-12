@@ -52,4 +52,4 @@ Uma amostra equilibrada de pesquisa **não** permite interpretar precisão como 
 
 - O artigo deve incluir a matriz de confusão e as métricas do teste final, com discussão dos 36 casos de phishing sem sinais e dos três falsos positivos.
 - `docs/AVALIACAO.md` ainda descreve um roteiro com participantes que não foi realizado nesta avaliação computacional; tratá-lo como proposta separada, não como resultado do TCC.
-- O teste final da configuração calibrada com limiar 1 foi feito offline. Após a avaliação, o mesmo limiar foi aplicado às duas versões da API usadas pela extensão demonstrativa; essa atualização não altera os resultados históricos do teste final.
+- O teste final da configuração calibrada com limiar 1 foi feito offline. Após a avaliação, o mesmo limiar foi aplicado às duas versões da API usadas pela extensão demonstrativa. Em uma revisão posterior, ambas passaram a usar limiar 2 para Suspeita forte e a categoria Atenção para 1 ponto. A comparação posterior do limiar 2 na mesma partição de teste é exploratória e está em `docs/COMPARACAO_LIMIAR_2.md`; não altera os resultados históricos nem valida o desempenho cotidiano.

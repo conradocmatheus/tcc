@@ -2,14 +2,42 @@ const http = require("node:http");
 const net = require("node:net");
 const fs = require("node:fs");
 const path = require("node:path");
+const { analyzeHtml, MAX_HTML_LENGTH } = require("./html-analyzer");
 
 const HOST = "127.0.0.1";
 const PORT = 5000;
+const EVERYDAY_THRESHOLD = 2;
+const MAX_BODY_BYTES = 2_100_000;
 const LIMITATION = "Esta demo usa apenas regras locais, não consulta bases de ameaças e não garante que o site seja seguro.";
 const TERMS = ["login", "verificacao", "verify", "senha", "password", "conta", "account", "atualizacao"];
 const EXTENSION_ORIGIN = /^chrome-extension:\/\/[a-p]{32}$/i;
 const HOME_PAGE = fs.readFileSync(path.join(__dirname, "index.html"));
 const EXAMPLE_PAGE = fs.readFileSync(path.join(__dirname, "example.html"));
+
+function classify(score, details) {
+  if (score >= EVERYDAY_THRESHOLD) {
+    return {
+      classification: "suspeita_forte",
+      title: "Suspeita forte",
+      recommendation: "Evite informar dados pessoais. Confirme o endereço por um canal oficial.",
+      ...details
+    };
+  }
+  if (score > 0) {
+    return {
+      classification: "atencao",
+      title: "Atenção",
+      recommendation: "Um sinal isolado também pode ocorrer em sites legítimos. Confira o endereço antes de informar dados pessoais.",
+      ...details
+    };
+  }
+  return {
+    classification: "nenhuma_ameaca_conhecida",
+    title: "Nenhuma ameaça conhecida encontrada",
+    recommendation: "Continue atento ao conteúdo e confirme o endereço quando houver dúvida.",
+    ...details
+  };
+}
 
 function analyzeUrl(input) {
   if (typeof input !== "string" || !input.trim() || input.length > 4096) {
@@ -54,7 +82,10 @@ function analyzeUrl(input) {
 
   const score = signals.reduce((total, signal) => total + signal.points, 0);
   const details = {
+    mode: "url",
     score,
+    urlScore: score,
+    htmlScore: 0,
     signals,
     reasons: signals.length
       ? signals.map(signal => signal.reason)
@@ -62,20 +93,32 @@ function analyzeUrl(input) {
     limitation: LIMITATION
   };
 
-  if (score >= 1) {
-    return {
-      classification: "suspeita_forte",
-      title: "Suspeita forte",
-      recommendation: "Evite informar dados pessoais. Confirme o endereço por um canal oficial.",
-      ...details
-    };
-  }
-  return {
-    classification: "nenhuma_ameaca_conhecida",
-    title: "Nenhuma ameaça conhecida encontrada",
-    recommendation: "Continue atento ao conteúdo e confirme o endereço quando houver dúvida.",
-    ...details
-  };
+  return classify(score, details);
+}
+
+function analyzePage(input, html) {
+  const urlResult = analyzeUrl(input);
+  if (!urlResult || typeof html !== "string" || html.length > MAX_HTML_LENGTH) return null;
+  const htmlAnalysis = analyzeHtml(html, input, analyzeUrl);
+  if (!htmlAnalysis) return null;
+  const signals = [...urlResult.signals, ...htmlAnalysis.signals];
+  const score = signals.reduce((total, signal) => total + signal.points, 0);
+  return classify(score, {
+    mode: "url_html",
+    score,
+    urlScore: urlResult.score,
+    htmlScore: score - urlResult.score,
+    signals,
+    reasons: signals.length ? signals.map(signal => signal.reason) : urlResult.reasons,
+    htmlAnalysis: {
+      linksFound: htmlAnalysis.linksFound,
+      navigableLinks: htmlAnalysis.navigableLinks,
+      buttonLinks: htmlAnalysis.buttonLinks,
+      externalLinks: htmlAnalysis.externalLinks,
+      externalTargetsWithSignals: htmlAnalysis.externalTargetsWithSignals
+    },
+    limitation: `${LIMITATION} ${htmlAnalysis.limitation}`
+  });
 }
 
 function sendJson(response, status, body) {
@@ -129,7 +172,7 @@ function createServer() {
     try {
       for await (const chunk of request) {
         bytes += chunk.length;
-        if (bytes > 8192) tooLarge = true;
+        if (bytes > MAX_BODY_BYTES) tooLarge = true;
         if (!tooLarge) chunks.push(chunk);
       }
       if (tooLarge) {
@@ -137,9 +180,9 @@ function createServer() {
         return;
       }
       const data = JSON.parse(Buffer.concat(chunks).toString("utf8"));
-      const result = analyzeUrl(data?.url);
+      const result = data?.html === undefined ? analyzeUrl(data?.url) : analyzePage(data?.url, data?.html);
       if (!result) {
-        sendJson(response, 400, { error: "Informe uma URL absoluta HTTP ou HTTPS válida, com até 4096 caracteres." });
+        sendJson(response, 400, { error: "Informe uma URL HTTP(S) válida e, se enviado, HTML textual com até 2 milhões de caracteres." });
         return;
       }
       sendJson(response, 200, result);
@@ -155,4 +198,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { analyzeUrl, createServer };
+module.exports = { analyzeUrl, analyzePage, createServer };

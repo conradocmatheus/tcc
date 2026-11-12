@@ -21,8 +21,8 @@ function element() {
 async function main() {
   const examples = [
     ["https://example.com/", 0, "nenhuma_ameaca_conhecida"],
-    ["http://example.com/", 1, "suspeita_forte"],
-    ["https://example.com/login", 1, "suspeita_forte"],
+    ["http://example.com/", 1, "atencao"],
+    ["https://example.com/login", 1, "atencao"],
     ["http://login.verificacao.conta.exemplo.test/", 4, "suspeita_forte"],
     ["http://127.0.0.1:5000/exemplo/login", 5, "suspeita_forte"]
   ];
@@ -48,7 +48,7 @@ async function checkPopup(baseUrl) {
   assert.equal(page.status, 200);
   assert.match(await page.text(), /Site fictício para a demonstração/);
 
-  const nodes = Object.fromEntries(["analyze", "site", "result"].map(id => [id, element()]));
+  const nodes = Object.fromEntries(["analyze", "analyze-page", "site", "result"].map(id => [id, element()]));
   const document = {
     getElementById: id => nodes[id],
     createElement: element
@@ -62,16 +62,20 @@ async function checkPopup(baseUrl) {
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(nodes.site.textContent, "127.0.0.1");
   assert.equal(nodes.analyze.disabled, false);
+  assert.equal(nodes["analyze-page"].disabled, false);
 
   await nodes.analyze.listeners.click();
   assert.equal(nodes.result.className, "result strong");
-  assert.equal(nodes.result.children[0].textContent, "Suspeita forte");
-  assert.equal(nodes.result.children[1].textContent, "Pontuação total: 5 pontos");
-  const list = nodes.result.children[3];
+  assert.equal(nodes.result.children[1].textContent, "Suspeita forte");
+  assert.equal(nodes.result.children[2].textContent, "Pontuação total: 5 pontos");
+  const list = nodes.result.children[4];
   assert.equal(list.children.length, 3);
   assert.deepEqual(Array.from(list.children, item => item.children[1].textContent),
     ["+3 pontos", "+1 ponto", "+1 ponto"]);
   assert.match(nodes.result.children.at(-1).textContent, /não garante que o site seja seguro/);
+  await nodes["analyze-page"].listeners.click();
+  assert.equal(nodes.result.children[0].textContent, "Análise da URL e dos links no HTML");
+  assert.match(nodes.result.children.at(-2).textContent, /HTML:/);
   console.log("Exemplos, página fictícia e popup → API → pontuação exibida: OK");
 }
 

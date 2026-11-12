@@ -1,5 +1,6 @@
 const API_URL = "http://127.0.0.1:5000/api/analyze";
 const button = document.getElementById("analyze");
+const pageButton = document.getElementById("analyze-page");
 const site = document.getElementById("site");
 const result = document.getElementById("result");
 let currentUrl = null;
@@ -27,6 +28,7 @@ function showAnalysis(data) {
   };
   result.className = `result ${styles[data.classification] || ""}`;
   result.replaceChildren();
+  addText("p", data.mode === "url_html" ? "Análise da URL e dos links no HTML" : "Análise somente da URL");
   addText("h2", data.title);
   if (Number.isInteger(data.score)) {
     addText("p", `Pontuação total: ${data.score} ${data.score === 1 ? "ponto" : "pontos"}`, "score");
@@ -51,26 +53,51 @@ function showAnalysis(data) {
     addText("p", data.reasons[0]);
   }
   addText("p", data.recommendation);
+  if (data.htmlAnalysis) {
+    const info = data.htmlAnalysis;
+    addText("p", `HTML: ${info.navigableLinks} links navegáveis, ${info.buttonLinks} em botões e ${info.externalLinks} para outros domínios.`);
+  }
   addText("p", data.limitation, "limitation");
 }
 
-async function analyze() {
+async function readHtml() {
+  const response = await fetch(currentUrl, { credentials: "omit", cache: "no-store" });
+  if (!response.ok || !response.headers.get("content-type")?.toLowerCase().includes("text/html")) {
+    throw new Error("A página não forneceu HTML.");
+  }
+  const declaredSize = Number(response.headers.get("content-length"));
+  if (declaredSize > 2_000_000) throw new Error("O HTML é muito grande para esta demonstração.");
+  const html = await response.text();
+  if (html.length > 2_000_000) throw new Error("O HTML é muito grande para esta demonstração.");
+  return html;
+}
+
+async function analyze(withHtml = false) {
   if (!currentUrl) return;
   button.disabled = true;
-  showMessage("Analisando o endereço…");
+  pageButton.disabled = true;
+  showMessage(withHtml ? "Lendo os links do HTML…" : "Analisando o endereço…");
 
   try {
+    let html;
+    let htmlUnavailable = false;
+    if (withHtml) {
+      try { html = await readHtml(); }
+      catch { htmlUnavailable = true; }
+    }
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: currentUrl })
+      body: JSON.stringify(html === undefined ? { url: currentUrl } : { url: currentUrl, html })
     });
     if (!response.ok) throw new Error("A API não conseguiu analisar este endereço.");
     showAnalysis(await response.json());
+    if (htmlUnavailable) addText("p", "Não foi possível obter o HTML desta página; o resultado acima usa apenas a URL.");
   } catch {
     showMessage("Não foi possível conectar à API local. Inicie a API e tente novamente.");
   } finally {
     button.disabled = false;
+    pageButton.disabled = false;
   }
 }
 
@@ -87,6 +114,7 @@ async function loadCurrentTab() {
     currentUrl = tab.url;
     site.textContent = url.hostname;
     button.disabled = false;
+    pageButton.disabled = false;
     showMessage("Pronto para analisar. Clique no botão acima.");
   } catch {
     site.textContent = "Endereço indisponível";
@@ -94,5 +122,6 @@ async function loadCurrentTab() {
   }
 }
 
-button.addEventListener("click", analyze);
+button.addEventListener("click", () => analyze(false));
+pageButton.addEventListener("click", () => analyze(true));
 loadCurrentTab();

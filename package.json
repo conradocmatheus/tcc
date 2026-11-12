@@ -1,0 +1,11 @@
+{
+  "name": "alerta-de-links-tcc",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/popup-flow.cjs && node tests/html-analysis.cjs"
+  },
+  "dependencies": {
+    "htmlparser2": "10.1.0"
+  }
+}

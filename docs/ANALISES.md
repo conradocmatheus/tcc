@@ -2,9 +2,11 @@
 
 ## Escopo atual
 
-A extensão lê a URL da aba após o clique do usuário e envia essa URL à API local. A página inicial em `http://127.0.0.1:5000/` usa a mesma API. O código analisa **somente a estrutura textual da URL**: não abre o site, não lê a página, não consulta bases de ameaças, não faz DNS e não bloqueia a navegação.
+A extensão oferece duas opções após o clique do usuário. A primeira envia somente a URL da aba à API local. A segunda solicita novamente o HTML da URL da aba, envia URL e HTML à API local e examina os destinos de links `href` do código recebido, sem executar scripts. A página inicial em `http://127.0.0.1:5000/` demonstra apenas a análise de URL. A extensão não consulta bases de ameaças, não faz DNS e não bloqueia a navegação. O HTML pode diferir da página já carregada; links inseridos por scripts depois do carregamento não entram nesta análise.
 
 A API aceita uma URL absoluta `http://` ou `https://` com até 4.096 caracteres. Entradas inválidas retornam erro 400, sem classificação. Uma URL válida recebe pontos conforme a tabela. Cada regra só pontua uma vez.
+
+Na opção URL + HTML, todos os `href` navegáveis do HTML recebido são examinados. Um ponto adicional, no máximo, é concedido quando algum link aponta para outro domínio registrável e a URL de destino atinge pelo menos dois pontos nas regras lexicais. O aviso prioriza links marcados como botões por `role`, classe ou elemento `<button>`. Um link externo, isoladamente, não pontua. A classificação cotidiana usa a soma dos pontos da URL e do eventual sinal de HTML.
 
 | Sinal verificado | Condição exata no código | Pontos | Por que chama atenção | Limitação |
 |---|---|---:|---|---|
@@ -23,18 +25,19 @@ A API aceita uma URL absoluta `http://` ou `https://` com até 4.096 caracteres.
 | Pontuação total | Categoria exibida | Interpretação correta |
 |---:|---|---|
 | 0 | Nenhuma ameaça conhecida encontrada | Nenhuma **regra local** disparou. Não houve consulta a uma base de ameaças e isso não comprova segurança. |
-| 1 ou mais | Suspeita forte | Um ou mais sinais locais foram encontrados. Confira o endereço; isso não confirma phishing. |
+| 1 | Atenção | Um sinal local foi encontrado; isso também pode ocorrer em sites legítimos. |
+| 2 ou mais | Suspeita forte | Dois ou mais pontos foram encontrados; isso não confirma phishing. |
 
 Exemplos fictícios para a apresentação, sem abrir os endereços:
 
 | URL enviada à API | Pontos | Resultado |
 |---|---:|---|
 | `https://example.com/` | 0 | Nenhuma ameaça conhecida encontrada |
-| `https://example.com/login` | 1 (termo) | Suspeita forte; um único sinal já atinge o limiar |
+| `https://example.com/login` | 1 (termo) | Atenção; um único sinal não atinge o limiar cotidiano de 2 pontos |
 | `http://login.verificacao.conta.exemplo.test/` | 4 (subdomínios + termo + HTTP) | Suspeita forte |
 | `http://127.0.0.1:5000/exemplo/login` | 5 (IP + termo + HTTP) | Suspeita forte; página local fictícia para testar a extensão |
 
-O limiar de um ponto também dispara com sinais comuns em páginas legítimas, como HTTP ou `login`; portanto, a expressão “Suspeita forte” indica apenas a categoria da triagem, não certeza de fraude. O rótulo “Nenhuma ameaça conhecida encontrada” foi mantido para o formato da demo, mas é amplo demais para a implementação atual. Se ele for usado no TCC, a explicação ao lado deve dizer explicitamente “nenhum sinal das regras locais”. Uma versão futura pode trocar o rótulo por **“Nenhum sinal local identificado”** até existir consulta real a uma base de reputação.
+O limiar cotidiano de dois pontos reserva “Suspeita forte” para pontuações maiores, mas não foi validado como solução para falsos positivos: no teste PhiUSIIL, os três casos legítimos que recebiam alerta com limiar 1 continuam recebendo com limiar 2. O limiar 1 permanece como configuração histórica da avaliação offline. O rótulo “Nenhuma ameaça conhecida encontrada” significa somente que nenhuma regra local disparou, não que o site seja seguro.
 
 ## O que implementar a seguir
 
